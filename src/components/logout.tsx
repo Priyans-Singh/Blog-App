@@ -14,7 +14,7 @@ import {
   
   export function Logout() {
     return (
-      <AlertDialog className='' >
+      <AlertDialog >
         <AlertDialogTrigger asChild>
           <Button variant="outline">Logout</Button>
         </AlertDialogTrigger>
