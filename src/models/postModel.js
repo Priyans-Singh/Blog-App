@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const PostSchema = new mongoose.Schema({
+const BlogSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
@@ -25,9 +25,13 @@ const PostSchema = new mongoose.Schema({
     content: {
         type: String,
         required: true,
-    }
+    },
+    category: {
+        type: String,
+        required: true,
+    },
 }, {timestamps: true});
 
-const Post = mongoose.model.posts || mongoose.model("posts", PostSchema);
+const Blog = mongoose.models.blogs || mongoose.model("blogs", BlogSchema);
 
-export default Post;
+export default Blog;

@@ -18,7 +18,6 @@ import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 
 
-
 export default function Signup() {
   
   const router = useRouter();

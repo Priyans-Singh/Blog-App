@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
@@ -10,14 +11,31 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { File, ListFilter, PlusCircle } from "lucide-react";
-import Card from "./contentCard";
+import BlogCard from "./contentCard";
+import { toast } from "./ui/use-toast";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-const Tab = () => {
-  // <TabsContent value="all">
-  //         <Card/>
-  //         </TabsContent>
+const Tab = () => { 
 
-  // const data = {1,2,3,4,5,6}
+  const [blogs, setBlogs] = useState([]);
+  
+
+  const getBlogs = async () => { 
+    try {
+      const res = await axios.get('/api/blog/getBlog');
+      setBlogs(res.data.data);
+    } catch (error:any) {
+      toast({
+        variant: "destructive",
+        title: error.response.data.error,
+      });
+       }     
+    };
+
+    useEffect( () => {
+      getBlogs();
+    },[])
 
   return (
     <Tabs defaultValue="all">
@@ -32,23 +50,13 @@ const Tab = () => {
         </TabsList>
       </div>
       <TabsContent value="all">
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+        { blogs?.map((blog:any, index) => {
+          return(
+            <BlogCard key={index} blog={blog} />
+          )
+        } ) }
       </TabsContent>
       <TabsContent value="active">
-        <Card/>
-        <Card/>
-        <Card/>
-        <Card/>
-        <Card/>
       </TabsContent>
     </Tabs>
   );

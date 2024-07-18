@@ -1,5 +1,16 @@
-import React from "react";
-import { Search,PanelLeft,Package2,Home ,ShoppingCart ,Package, Users2, LineChart } from "lucide-react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import {
+  Search,
+  PanelLeft,
+  Package2,
+  Home,
+  ShoppingCart,
+  Package,
+  Users2,
+  LineChart,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -18,14 +29,50 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Link from "next/link";
 import { Input } from "./ui/input";
 import Image from "next/image";
 import { ModeToggle } from "./modeToggle";
-import { Logout } from "./logout";
+import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
+import { cookies } from "next/headers";
 
 const Header = () => {
+
+  const [userData, setUserData] = useState<{ profilePic?: string } | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const getUser = async () => {
+    try {
+      const response = await axios.get("/api/users/userData");
+      setUserData(response.data.data);
+      setLoggedIn(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const logout = async () =>{
+    try {
+      const response = await axios.post('/api/users/logout');
+      setLoggedIn(false);
+      setUserData(null);
+      toast({
+        description: response.data.message,
+      });
+    } catch (error:any) {
+      toast({
+        variant: "destructive",
+        title: error.response.data.error,
+      });
+    }
+  }
+
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Sheet>
@@ -117,7 +164,9 @@ const Header = () => {
             className="overflow-hidden rounded-full"
           >
             <Image
-              src='/profile.jpg'
+              src={ userData ? 
+                 userData.profilePic? userData.profilePic : 'profile.svg'
+                : 'profile.svg' }
               width={36}
               height={36}
               alt="Avatar"
@@ -131,9 +180,11 @@ const Header = () => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Logout />
-          </DropdownMenuItem>
+          {loggedIn ? 
+            <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem> : <DropdownMenuItem>
+              <Link href='/login'>Log In</Link>
+            </DropdownMenuItem>
+          }
         </DropdownMenuContent>
       </DropdownMenu>
       <ModeToggle />
