@@ -1,5 +1,5 @@
 import Blog from '@/models/postModel';
-import User from '@/models/userModel';
+import User from '@/models/UserModel';
 import jwt from 'jsonwebtoken';
 import { NextRequest, NextResponse } from 'next/server';
 import { dbConnect } from '@/dbconfig/dbConnect';
