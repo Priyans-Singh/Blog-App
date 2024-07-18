@@ -34,7 +34,7 @@ export function ChatList({
       >
           {messages?.map((message, index) => (
             
-              <div className="flex gap-3 items-center">
+              <div key={index} className="flex gap-3 items-center">
                 {message.name === selectedUser.name && (
                   <Avatar className="flex justify-center items-center">
                     <AvatarImage
