@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-const BlogCard = ({blog}) => {
+const BlogCard = ({blog}:any) => {
   return (
     <Card  >
       <CardHeader className=" relative">
