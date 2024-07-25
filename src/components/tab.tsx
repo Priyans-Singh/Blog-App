@@ -38,25 +38,53 @@ const Tab = () => {
     },[])
 
   return (
-    <Tabs defaultValue="all">
+    <Tabs defaultValue="All">
       <div className="flex items-center">
         <TabsList>
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="active">Active</TabsTrigger>
-          <TabsTrigger value="draft">Draft</TabsTrigger>
-          <TabsTrigger value="archived" className="hidden sm:flex">
+          <TabsTrigger value="All">All</TabsTrigger>
+          <TabsTrigger value="Technology">Technology</TabsTrigger>
+          <TabsTrigger value="Business">Business</TabsTrigger>
+          <TabsTrigger value="Creative Arts">Creative Arts</TabsTrigger>
+          <TabsTrigger value="Lifestyle">Lifestyle</TabsTrigger>
+          {/* <TabsTrigger value="archived" className="hidden sm:flex">
             Archived
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
       </div>
-      <TabsContent value="all">
+      <TabsContent value="All">
         { blogs?.map((blog:any, index) => {
           return(
             <BlogCard key={index} blog={blog} />
           )
         } ) }
       </TabsContent>
-      <TabsContent value="active">
+      <TabsContent value="Technology">
+        {blogs.filter((blog:any) => blog.category === "Technology").map((blog:any, index) => {
+          return(
+            <BlogCard key={index} blog={blog} />
+          )
+        })}
+      </TabsContent>
+      <TabsContent value="Business">
+        {blogs.filter((blog:any) => blog.category === "Business").map((blog:any, index) => {
+          return(
+            <BlogCard key={index} blog={blog} />
+          )
+        })}
+      </TabsContent>
+      <TabsContent value="Creative Arts">
+        {blogs.filter((blog:any) => blog.category === "Creative Arts").map((blog:any, index) => {
+          return(
+            <BlogCard key={index} blog={blog} />
+          )
+        })}
+      </TabsContent>
+      <TabsContent value="Lifestyle">
+        {blogs.filter((blog:any) => blog.category === "Lifestyle").map((blog:any, index) => {
+          return(
+            <BlogCard key={index} blog={blog} />
+          )
+        })}
       </TabsContent>
     </Tabs>
   );

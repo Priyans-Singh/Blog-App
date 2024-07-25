@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  Search,
-  PanelLeft,
-  Package2,
   Home,
-  ShoppingCart,
-  Package,
-  Users2,
-  LineChart,
+  Package2,
+  PanelLeft,
+  Search,
+  MessageCircleMore,
+  Settings,
+  PlusCircle,
+  User2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,11 +36,13 @@ import Image from "next/image";
 import { ModeToggle } from "./modeToggle";
 import axios from "axios";
 import { toast } from "@/components/ui/use-toast";
-import { cookies } from "next/headers";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
-
-  const [userData, setUserData] = useState<{ profilePic?: string } | null>(null);
+  const router = useRouter();
+  const [userData, setUserData] = useState<{ profilePic?: string , name?:string } | null>(
+    null
+  );
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -57,24 +59,28 @@ const Header = () => {
     }
   };
 
-  const logout = async () =>{
+  const logout = async () => {
     try {
-      const response = await axios.post('/api/users/logout');
+      const response = await axios.post("/api/users/logout");
       setLoggedIn(false);
       setUserData(null);
       toast({
         description: response.data.message,
       });
-    } catch (error:any) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: error.response.data.error,
       });
     }
-  }
+  };
+
+  const login = () => {
+    router.push("/login");
+  };
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-white px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Sheet>
         <SheetTrigger asChild>
           <Button size="icon" variant="outline" className="sm:hidden">
@@ -85,51 +91,57 @@ const Header = () => {
         <SheetContent side="left" className="sm:max-w-xs">
           <nav className="grid gap-6 text-lg font-medium">
             <Link
-              href="#"
+              href="/"
               className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
             >
-              <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
+              <Image
+                src="/Bloggers-logo.svg"
+                height={200}
+                width={200}
+                alt="Bloggers-logo"
+                className="scale-150"
+              />
               <span className="sr-only">Acme Inc</span>
             </Link>
             <Link
-              href="#"
+              href="/"
               className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
             >
               <Home className="h-5 w-5" />
-              Dashboard
+              Home
             </Link>
             <Link
-              href="#"
+              href="/blog/createBlog"
               className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
             >
-              <ShoppingCart className="h-5 w-5" />
-              Orders
+              <PlusCircle className="h-5 w-5" />
+              New Blog
             </Link>
             <Link
-              href="#"
+              href="/profileEdit"
               className="flex items-center gap-4 px-2.5 text-foreground"
             >
-              <Package className="h-5 w-5" />
-              Products
+              <User2 className="h-5 w-5" />
+              Profile
+            </Link>
+            <Link
+              href="/message"
+              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+              <MessageCircleMore className="h-5 w-5" />
+              Message
             </Link>
             <Link
               href="#"
               className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
             >
-              <Users2 className="h-5 w-5" />
-              Customers
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-            >
-              <LineChart className="h-5 w-5" />
+              <Settings className="h-5 w-5" />
               Settings
             </Link>
           </nav>
         </SheetContent>
       </Sheet>
-      <Breadcrumb className="hidden md:flex">
+      {/* <Breadcrumb className="hidden md:flex">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
@@ -147,7 +159,7 @@ const Header = () => {
             <BreadcrumbPage>Recent Orders</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
-      </Breadcrumb>
+      </Breadcrumb> */}
       <div className="relative ml-auto flex-1 md:grow-0">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
@@ -164,9 +176,13 @@ const Header = () => {
             className="overflow-hidden rounded-full"
           >
             <Image
-              src={ userData ? 
-                 userData.profilePic? userData.profilePic : 'profile.svg'
-                : 'profile.svg' }
+              src={
+                userData
+                  ? userData.profilePic
+                    ? userData.profilePic
+                    : "profile.svg"
+                  : "profile.svg"
+              }
               width={36}
               height={36}
               alt="Avatar"
@@ -175,16 +191,22 @@ const Header = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            {userData?.name || "My account"}
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          {loggedIn ? 
-            <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem> : <DropdownMenuItem>
-              <Link href='/login'>Log In</Link>
+          {loggedIn ? (
+            <DropdownMenuItem className=" cursor-pointer" onClick={logout}>
+              Logout
             </DropdownMenuItem>
-          }
+          ) : (
+            <DropdownMenuItem className=" cursor-pointer" onClick={login}>
+              Log In
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
       <ModeToggle />
