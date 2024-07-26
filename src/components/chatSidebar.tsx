@@ -12,10 +12,13 @@ import {
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Message } from "@/app/data";
+import { set } from "mongoose";
+import useChatSet from "@/zustand/chatSet";
 
 interface SidebarProps {
   isCollapsed: boolean;
   links: {
+    id: string;
     name: string;
     messages: Message[];
     avatar: string;
@@ -26,6 +29,13 @@ interface SidebarProps {
 }
 
 export function Sidebar({ links, isCollapsed, isMobile }: SidebarProps) {
+  const { users, setReciever }:any = useChatSet();
+
+  const handleReciever = (link: any) => {
+     const reciever = users.find((user: any) => user._id === link.id);
+     setReciever(reciever);
+  };
+
   return (
     <div
       data-collapsed={isCollapsed}
@@ -75,6 +85,7 @@ export function Sidebar({ links, isCollapsed, isMobile }: SidebarProps) {
                       link.variant === "grey" &&
                         "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
                     )}
+                    onClick={ ()=>handleReciever(link)}
                   >
                     <Avatar className="flex justify-center items-center">
                       <AvatarImage
@@ -106,6 +117,7 @@ export function Sidebar({ links, isCollapsed, isMobile }: SidebarProps) {
                   "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white shrink",
                 "justify-start gap-4"
               )}
+              onClick={ ()=>handleReciever(link)}
             >
               <Avatar className="flex justify-center items-center">
                 <AvatarImage

@@ -10,6 +10,10 @@ import {
 import { cn } from "@/lib/utils";
 import { Sidebar } from "../chatSidebar";
 import { Chat } from "./chat";
+import axios from "axios";
+import { toast } from "@/components/ui/use-toast";
+import useChatSet from "@/zustand/chatSet";
+
 
 interface ChatLayoutProps {
   defaultLayout: number[] | undefined;
@@ -26,11 +30,31 @@ export function ChatLayout({
   const [selectedUser, setSelectedUser] = React.useState(userData[0]);
   const [isMobile, setIsMobile] = useState(false);
 
+  const { users, setUsers , messages, reciever, setReciever }:any = useChatSet();
+
+  const getUsers = async () => {
+    try {
+      const response = await axios.get("/api/chat/getUsers");
+      setUsers(response.data.users);
+    } catch (error:any) {
+      toast({
+        variant: "destructive",
+        title: error.response.data.error,
+      });
+    }
+  }
+
+  // useEffect( () =>{
+  //   getUsers();
+  // }, [])
+
   useEffect(() => {
     const checkScreenWidth = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-
+    
+    getUsers();
+    // console.log(users);
     // Initial check
     checkScreenWidth();
 
@@ -39,6 +63,7 @@ export function ChatLayout({
 
     // Cleanup the event listener on component unmount
     return () => {
+      setReciever(null);
       window.removeEventListener("resize", checkScreenWidth);
     };
   }, []);
@@ -57,8 +82,8 @@ export function ChatLayout({
         defaultSize={defaultLayout[0]}
         collapsedSize={navCollapsedSize}
         collapsible={true}
-        minSize={isMobile ? 0 : 24}
-        maxSize={isMobile ? 8 : 30}
+        minSize={isMobile ? 0 : 15}
+        maxSize={isMobile ? 8 : 20}
         onCollapse={() => {
           setIsCollapsed(true);
           document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(
@@ -77,11 +102,12 @@ export function ChatLayout({
       >
         <Sidebar
           isCollapsed={isCollapsed || isMobile}
-          links={userData.map((user) => ({
+          links={users.map((user:any) => ({
+            id: user._id,
             name: user.name,
-            messages: user.messages ?? [],
-            avatar: user.avatar,
-            variant: selectedUser.name === user.name ? "grey" : "ghost",
+            messages:messages || [],
+            avatar: user.profilePic || "/profile.svg",
+            variant: reciever?._id === user._id ? "grey" : "ghost",
           }))}
           isMobile={isMobile}
         />

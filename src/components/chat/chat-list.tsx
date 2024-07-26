@@ -15,7 +15,7 @@ export function ChatList({
   messages,
   selectedUser,
   sendMessage,
-  isMobile
+  isMobile,
 }: ChatListProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
@@ -33,8 +33,13 @@ export function ChatList({
         className="w-full overflow-y-auto overflow-x-hidden h-full flex flex-col"
       >
           {messages?.map((message, index) => (
-            
-              <div key={index} className="flex gap-3 items-center">
+            <div
+              className={cn(
+                "flex flex-col gap-2 p-4 whitespace-pre-wrap",
+                message.name !== selectedUser.name ? "items-end" : "items-start"
+              )}
+            >
+              <div className="flex gap-3 items-center">
                 {message.name === selectedUser.name && (
                   <Avatar className="flex justify-center items-center">
                     <AvatarImage
@@ -59,9 +64,10 @@ export function ChatList({
                   </Avatar>
                 )}
               </div>
+            </div>
           ))}
       </div>
-      <ChatBottombar sendMessage={sendMessage} isMobile={isMobile}/>
+      <ChatBottombar sendMessage={sendMessage} isMobile={isMobile} />
     </div>
   );
 }
