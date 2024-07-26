@@ -34,6 +34,7 @@ export function ChatList({
       >
           {messages?.map((message, index) => (
             <div
+              key={index}
               className={cn(
                 "flex flex-col gap-2 p-4 whitespace-pre-wrap",
                 message.name !== selectedUser.name ? "items-end" : "items-start"
